@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:job_board/features/job_applications/data/models/application_model.dart';
 import 'package:job_board/features/job_applications/presentation/cubit/application_cubit.dart';
+import 'package:path_provider/path_provider.dart';
 
 class SubmitApplicationSheet extends StatefulWidget {
   final String jobId;
@@ -34,10 +35,19 @@ class _SubmitApplicationSheetState extends State<SubmitApplicationSheet> {
       type: FileType.custom,
       allowedExtensions: ['pdf'],
     );
-    if (result != null) {
+    final savedFile;
+    if (result != null && result.files.single.path != null) {
+      final tempPath = result.files.single.path!;
+      final fileName = result.files.single.name;
+
+      final appDocDir = await getApplicationDocumentsDirectory();
+      final savedPath = '${appDocDir.path}/$fileName';
+
+      savedFile = await File(tempPath).copy(savedPath);
       setState(() {
-        _selectedResume = File(result.files.single.path!);
+        _selectedResume = savedFile;
       });
+      // return savedFile.path; // return the safe path to store in Hive
     }
   }
 

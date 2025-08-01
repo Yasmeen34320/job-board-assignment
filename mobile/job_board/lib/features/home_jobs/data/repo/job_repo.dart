@@ -13,11 +13,26 @@ class JobRepository {
   }
 
   Future<void> updateJob(String id, Job updatedJob) async {
-    await _jobBox.put(id, updatedJob);
+    final keyToUpdate = _jobBox.keys.firstWhere(
+      (key) => _jobBox.get(key)?.id == id,
+      orElse: () => null,
+    );
+
+    if (keyToUpdate != null) {
+      await _jobBox.put(keyToUpdate, updatedJob);
+    }
   }
 
   Future<void> deleteJob(String id) async {
-    await _jobBox.delete(id);
+    final keyToDelete = _jobBox.keys.firstWhere(
+      (key) => _jobBox.get(key)?.id == id,
+      orElse: () => null,
+    );
+
+    if (keyToDelete != null) {
+      await _jobBox.delete(keyToDelete);
+    }
+    // await _jobBox.delete(id);
   }
 
   Job? getJobById(String id) {

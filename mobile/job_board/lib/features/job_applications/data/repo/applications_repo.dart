@@ -5,10 +5,10 @@ import 'package:job_board/features/job_applications/data/models/application_mode
 import 'package:uuid/uuid.dart';
 
 class ApplicationRepo {
-  Future<List<ApplicationModel>> getAllApplications(String userId) async {
-    final box = Hive.box<ApplicationModel>('applications');
-    final userBox = Hive.box<UserModel>('users');
+  final box = Hive.box<ApplicationModel>('applications');
+  final userBox = Hive.box<UserModel>('users');
 
+  Future<List<ApplicationModel>> getAllApplications(String userId) async {
     UserModel? user = userBox.values.firstWhere((user) => user.id == userId);
     print('User role: ${user.role}');
     if (user.role == 'jobseeker') {
@@ -17,6 +17,17 @@ class ApplicationRepo {
           .toList();
     }
     return box.values.toList();
+  }
+
+  Future<void> updateApp(String id, ApplicationModel app) async {
+    final keyToUpdate = box.keys.firstWhere(
+      (key) => box.get(key)?.id == id,
+      orElse: () => null,
+    );
+
+    if (keyToUpdate != null) {
+      await box.put(keyToUpdate, app);
+    }
   }
 
   Future<void> submitApplication({
@@ -33,9 +44,21 @@ class ApplicationRepo {
       userId: userId,
       resumePath: resumeFile.path,
       coverLetter: coverLetter,
-      status: 'submitted',
+      status: 'pending',
+      createdAt: DateTime.now(),
     );
 
     await box.add(application);
+  }
+
+  Future<void> deleteApp(String applicationId) async {
+    final keyToDelete = box.keys.firstWhere(
+      (key) => box.get(key)?.id == applicationId,
+      orElse: () => null,
+    );
+
+    if (keyToDelete != null) {
+      await box.delete(keyToDelete);
+    }
   }
 }

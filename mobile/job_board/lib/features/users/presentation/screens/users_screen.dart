@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
 import 'package:job_board/core/services/service_locator.dart';
+import 'package:job_board/features/home_jobs/presentation/cubit/navigation_cubit/navigation_cubit.dart';
+import 'package:job_board/features/job_applications/data/models/application_model.dart';
+import 'package:job_board/features/job_applications/presentation/cubit/application_cubit.dart';
+import 'package:job_board/features/job_applications/presentation/screens/applications_screen.dart';
 import 'package:job_board/features/users/data/repo/users_rebo.dart';
 import 'package:job_board/features/users/presentation/components/show_add_admin_sheet.dart';
 import 'package:job_board/features/users/presentation/cubit/users_cubit.dart';
@@ -110,6 +115,11 @@ class UsersScreen extends StatelessWidget {
                         itemCount: state.users.length,
                         itemBuilder: (context, index) {
                           final user = state.users[index];
+                          final applicationsCount =
+                              Hive.box<ApplicationModel>('applications').values
+                                  .where((test) => test.userId == user.id)
+                                  .length;
+
                           return ListTile(
                             leading: CircleAvatar(
                               radius: 30,
@@ -124,12 +134,45 @@ class UsersScreen extends StatelessWidget {
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                            subtitle: Text(
-                              user.email,
-                              style: GoogleFonts.poppins(
-                                // fontSize: 16,
-                                letterSpacing: 1.2,
-                              ),
+                            subtitle: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  user.email,
+                                  style: GoogleFonts.poppins(
+                                    // fontSize: 16,
+                                    letterSpacing: 1.2,
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Made a ${applicationsCount} Applications',
+                                    ),
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Color(0xFF4F4AD3),
+                                        foregroundColor: Colors.white,
+                                      ),
+                                      onPressed: () {
+                                        context
+                                                .read<ApplicationCubit>()
+                                                .searchQuery =
+                                            user.fullName;
+                                        context
+                                            .read<MainLayoutCubit>()
+                                            .changeTab(
+                                              2,
+                                            ); // go to Applications tab
+                                      },
+                                      child: Text('view'),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           );
                         },

@@ -23,6 +23,7 @@ class ApplicationModelAdapter extends TypeAdapter<ApplicationModel> {
       resumePath: fields[3] as String,
       coverLetter: fields[4] as String,
       status: fields[5] as String,
+      createdAt: fields[6] as DateTime? ?? DateTime.now(),
     );
   }
 
@@ -41,7 +42,9 @@ class ApplicationModelAdapter extends TypeAdapter<ApplicationModel> {
       ..writeByte(4)
       ..write(obj.coverLetter)
       ..writeByte(5)
-      ..write(obj.status);
+      ..write(obj.status)
+      ..write(6)
+      ..write(obj.createdAt);
   }
 
   @override

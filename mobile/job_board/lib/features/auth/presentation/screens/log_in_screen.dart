@@ -25,11 +25,18 @@ class LogInScreen extends StatelessWidget {
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text("Logged in successfully!")));
-            Navigator.pushReplacement(
+            // Navigator.pushReplacement(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (_) => MainNavigationScreen(role: state.user.role),
+            //   ),
+            // );
+            Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
                 builder: (_) => MainNavigationScreen(role: state.user.role),
               ),
+              (Route<dynamic> route) => false, // Remove all previous routes
             );
           } else if (state is AuthFailure) {
             ScaffoldMessenger.of(
@@ -142,8 +149,8 @@ class LogInScreen extends StatelessWidget {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       SizedBox(
-                                        height: 24,
-                                        width: 24,
+                                        height: 16,
+                                        width: 16,
                                         child: CircularProgressIndicator(
                                           strokeWidth: 2,
                                           valueColor:
@@ -158,7 +165,8 @@ class LogInScreen extends StatelessWidget {
                                         style: GoogleFonts.poppins(
                                           color: Color(0xFF4F4AD3),
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 22,
+                                          fontSize: 16,
+                                          letterSpacing: 2,
                                         ),
                                       ),
                                     ],
@@ -191,7 +199,13 @@ class LogInScreen extends StatelessWidget {
                                   ),
                                   fixedSize: Size(400, 48),
                                 ),
-                                child: Text('Log In'),
+                                child: Text(
+                                  'Log In',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 16,
+                                    letterSpacing: 2,
+                                  ),
+                                ),
                               ),
                             SizedBox(height: 20),
                             Row(

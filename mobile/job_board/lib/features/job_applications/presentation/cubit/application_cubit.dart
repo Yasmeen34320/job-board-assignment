@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
@@ -34,6 +35,8 @@ class ApplicationCubit extends Cubit<ApplicationState> {
     }
   }
 
+  var selectedStatus = "All";
+  var searchQuery = "";
   Future<void> getAllApplications(String userId) async {
     emit(ApplicationsLoading());
     try {
@@ -46,7 +49,31 @@ class ApplicationCubit extends Cubit<ApplicationState> {
             ),
           )
           .toList();
+      if (selectedStatus != 'All') {
+        applications = applications
+            .where((app) => app.status == selectedStatus)
+            .toList();
+      }
+      print("Before search filter: ${applications.length}");
+
+      if (searchQuery.isNotEmpty) {
+        final usersBox = Hive.box<UserModel>('users');
+        final query = searchQuery.toLowerCase();
+
+        applications = applications.where((app) {
+          final user = usersBox.values.firstWhere(
+            (user) => user.id == app.userId,
+          );
+
+          if (user == null) return false;
+
+          return user.fullName.toLowerCase().contains(query);
+        }).toList();
+      }
+      print("After search filter: ${applications.length}");
+
       print('from the cubit: $userId');
+      print('status: ${selectedStatus}');
       emit(ApplicationsLoaded(applications));
       // return applications;
     } catch (e) {
@@ -63,6 +90,39 @@ class ApplicationCubit extends Cubit<ApplicationState> {
       (app) => app.jobId == jobId && app.userId == userId,
     );
   };
+  Future<void> updateApplication(String id, ApplicationModel updatedApp) async {
+    await applicationRepo.updateApp(id, updatedApp);
+  }
+
+  Future<void> deleteApplication(String applicationId) async {
+    await applicationRepo.deleteApp(applicationId);
+  }
+
+  // Future<void> filterApplications() async {
+  //   emit(ApplicationsLoading());
+  //   try {
+  //     var applications = await applicationRepo.getAllApplications('');
+  //     var jobsBox = Hive.box<Job>('jobs');
+  //     applications = applications
+  //         .where(
+  //           (application) => jobsBox.values.toList().any(
+  //             (job) => job.id == application.jobId,
+  //           ),
+  //         )
+  //         .toList();
+  //     if (selectedStatus != 'All') {
+  //       applications = applications
+  //           .where((app) => app.status == selectedStatus)
+  //           .toList();
+  //     }
+  //     emit(ApplicationsLoaded(applications));
+  //     // return applications;
+  //   } catch (e) {
+  //     emit(ApplicationError('Failed to fetch applications: $e'));
+  //     // return [];
+  //   }
+  // }
+
   // ApplicationModel? getApplicationById(String jobId, String userId) {
   //   final applications = applicationRepo.getAllApplications();
   //   return applications.firstWhere((app) => app.jobId == jobId && app.userId == userId, orElse: () => null);

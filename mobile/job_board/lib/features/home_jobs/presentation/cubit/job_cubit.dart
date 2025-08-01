@@ -60,6 +60,32 @@ class JobCubit extends Cubit<JobState> {
           createdAt: DateTime.now().add(const Duration(minutes: 1)),
         ),
       );
+      _jobRepository.addJob(
+        Job(
+          id: DateTime.now()
+              .add(const Duration(minutes: 1))
+              .millisecondsSinceEpoch
+              .toString(),
+          title: 'Senior Flutter Mobile Application',
+          description:
+              'We are looking for a highly skilled senior Flutter developer to lead mobile projects and build scalable, maintainable applications following modern architecture patterns.',
+          location: 'Giza, Egypt',
+          salary: 15000,
+          status: 'open',
+          createdBy: 'TechVerse Solutions',
+          imageUrl:
+              'https://i.pinimg.com/1200x/28/75/a4/2875a431ddd19fcc0d006c0a7e6190bc.jpg',
+          companyName: 'TechVerse Solutions',
+          requirements: [
+            '5+ years of experience in mobile development',
+            'Strong expertise in Flutter, Dart, and Firebase services',
+            'Experience in Clean Architecture, BLoC/Cubit',
+            'Unit and integration testing',
+            'Performance optimization and debugging',
+          ],
+          createdAt: DateTime.now().add(const Duration(minutes: 1)),
+        ),
+      );
     }
 
     // Load jobs after adding

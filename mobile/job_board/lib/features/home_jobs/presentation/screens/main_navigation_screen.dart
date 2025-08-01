@@ -53,7 +53,9 @@
 //   }
 // }
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:job_board/features/home_jobs/presentation/cubit/navigation_cubit/navigation_cubit.dart';
 import 'package:job_board/features/home_jobs/presentation/screens/job_screen.dart';
 import 'package:job_board/features/home_jobs/test.dart';
 import 'package:job_board/features/job_applications/presentation/screens/applications_screen.dart';
@@ -69,7 +71,7 @@ class MainNavigationScreen extends StatefulWidget {
 }
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
-  int _currentIndex = 0;
+  // int _currentIndex = 0;
   final selectedColor = const Color(0xFF4F4AD3);
 
   @override
@@ -99,38 +101,48 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
           ];
 
-    return Scaffold(
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        child: screens[_currentIndex],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (i) => setState(() => _currentIndex = i),
-        selectedItemColor: selectedColor,
-        unselectedItemColor: Colors.grey,
-        type: BottomNavigationBarType.fixed,
-        selectedLabelStyle: GoogleFonts.poppins(fontWeight: FontWeight.bold),
-        unselectedLabelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w500),
-        showUnselectedLabels: true,
-        items: List.generate(items.length, (index) {
-          final item = items[index];
-          final isSelected = index == _currentIndex;
-
-          return BottomNavigationBarItem(
-            icon: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              padding: const EdgeInsets.only(top: 4),
-              child: Icon(
-                (item.icon as Icon).icon,
-                color: isSelected ? selectedColor : Colors.grey,
-                size: isSelected ? 28 : 24,
-              ),
+    return BlocBuilder<MainLayoutCubit, int>(
+      builder: (context, currentIndex) {
+        return Scaffold(
+          body: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: screens[currentIndex],
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: currentIndex,
+            onTap: (i) {
+              context.read<MainLayoutCubit>().changeTab(i);
+            },
+            selectedItemColor: selectedColor,
+            unselectedItemColor: Colors.grey,
+            type: BottomNavigationBarType.fixed,
+            selectedLabelStyle: GoogleFonts.poppins(
+              fontWeight: FontWeight.bold,
             ),
-            label: item.label,
-          );
-        }),
-      ),
+            unselectedLabelStyle: GoogleFonts.poppins(
+              fontWeight: FontWeight.w500,
+            ),
+            showUnselectedLabels: true,
+            items: List.generate(items.length, (index) {
+              final item = items[index];
+              final isSelected = index == currentIndex;
+
+              return BottomNavigationBarItem(
+                icon: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Icon(
+                    (item.icon as Icon).icon,
+                    color: isSelected ? selectedColor : Colors.grey,
+                    size: isSelected ? 28 : 24,
+                  ),
+                ),
+                label: item.label,
+              );
+            }),
+          ),
+        );
+      },
     );
   }
 }

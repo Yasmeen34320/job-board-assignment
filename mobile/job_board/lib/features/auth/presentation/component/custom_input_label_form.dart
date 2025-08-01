@@ -34,7 +34,7 @@ class _CustomInputLabelFormState extends State<CustomInputLabelForm> {
           Text(
             widget.label,
             style: GoogleFonts.poppins(
-              fontSize: 19,
+              fontSize: 17,
               letterSpacing: 3,
               fontWeight: FontWeight.w600,
             ),
@@ -51,7 +51,7 @@ class _CustomInputLabelFormState extends State<CustomInputLabelForm> {
             hintText: widget.hintText,
             hintStyle: GoogleFonts.poppins(
               color: Colors.grey.shade500,
-              fontSize: 17,
+              fontSize: 15,
             ),
             // Remove errorStyle here to use default error placement
             contentPadding: const EdgeInsets.symmetric(

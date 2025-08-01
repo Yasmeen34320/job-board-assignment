@@ -21,14 +21,17 @@ class ApplicationModel extends HiveObject {
   final String coverLetter;
 
   @HiveField(5)
-  final String status; // submitted, reviewed, accepted, rejected
+  final String status; // pending, accepted, rejected
 
+  @HiveField(6)
+  final DateTime createdAt;
   ApplicationModel({
     required this.id,
     required this.jobId,
     required this.userId,
     required this.resumePath,
     required this.coverLetter,
-    this.status = 'submitted',
+    this.status = 'pending',
+    required this.createdAt,
   });
 }

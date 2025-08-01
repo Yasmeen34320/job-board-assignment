@@ -12,8 +12,11 @@ import 'package:job_board/features/auth/presentation/cubit/auth_state.dart';
 import 'package:job_board/features/auth/presentation/screens/log_in_screen.dart';
 import 'package:job_board/features/auth/presentation/screens/sign_up_screen.dart';
 import 'package:job_board/features/home_jobs/data/models/job_model.dart';
+import 'package:job_board/features/home_jobs/presentation/cubit/navigation_cubit/navigation_cubit.dart';
 import 'package:job_board/features/home_jobs/test.dart';
 import 'package:job_board/features/job_applications/data/models/application_model.dart';
+import 'package:job_board/features/job_applications/data/repo/applications_repo.dart';
+import 'package:job_board/features/job_applications/presentation/cubit/application_cubit.dart';
 import 'package:job_board/features/splash/splash_screen.dart';
 
 void main() async {
@@ -28,6 +31,8 @@ void main() async {
 
   await Hive.openBox<Job>('jobs');
   Hive.registerAdapter(ApplicationModelAdapter());
+  // Hive.deleteBoxFromDisk('applications');
+
   await Hive.openBox<ApplicationModel>('applications');
   setupLocator(); // ⬅ Initialize your service locator
   runApp(const MyApp());
@@ -39,9 +44,20 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          AuthCubit(locator<MockAuthRepository>())..getCurrentUser(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              AuthCubit(locator<MockAuthRepository>())..getCurrentUser(),
+        ),
+        BlocProvider(
+          create: (context) => ApplicationCubit(
+            (locator<ApplicationRepo>())..getAllApplications(''),
+          ),
+        ),
+        BlocProvider(create: (_) => MainLayoutCubit()), // <-- This
+      ],
+
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(

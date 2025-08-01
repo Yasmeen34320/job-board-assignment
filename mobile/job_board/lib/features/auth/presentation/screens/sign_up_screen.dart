@@ -168,7 +168,13 @@ class SignUpScreen extends StatelessWidget {
                               ),
                               fixedSize: Size(400, 48),
                             ),
-                            child: Text('Sign Up'),
+                            child: Text(
+                              'Sign Up',
+                              style: GoogleFonts.poppins(
+                                letterSpacing: 2,
+                                fontSize: 16,
+                              ),
+                            ),
                           ),
                           SizedBox(height: 20),
                           Row(

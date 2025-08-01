@@ -29,6 +29,8 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return WillPopScope(
       onWillPop: () async {
         Navigator.pop(context, hasApplied); // Send result even on back button
@@ -52,318 +54,343 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Container(
-                            width: 100,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: NetworkImage(widget.job.imageUrl),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                widget.job.companyName,
-                                style: GoogleFonts.poppins(
-                                  fontSize: 16,
-                                  letterSpacing: 2,
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                widget.job.title,
-                                style: GoogleFonts.poppins(
-                                  fontSize: 22,
-                                  letterSpacing: 2,
-                                  color: Colors.black87,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 16),
-                      Row(
-                        children: [
-                          SizedBox(width: 20),
-                          Container(
-                            width: 60, // adjust size as needed
-                            height: 60,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.grey.shade200, // background color
-                            ),
-                            child: Icon(
-                              Icons.attach_money, // change to your desired icon
-                              color: Color(0xFF4F4AD3), // icon color
-                              size: 30,
-                            ),
-                          ),
-                          SizedBox(width: 16),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Salary',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 16,
-                                  letterSpacing: 2,
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                '\$${widget.job.salary}',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 18,
-                                  letterSpacing: 2,
-                                  color: Colors.black87,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 16),
-                      Row(
-                        children: [
-                          SizedBox(width: 20),
-                          Container(
-                            width: 60, // adjust size as needed
-                            height: 60,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.grey.shade200, // background color
-                            ),
-                            child: Icon(
-                              Icons
-                                  .location_city, // change to your desired icon
-                              color: Color(0xFF4F4AD3), // icon color
-                              size: 30,
-                            ),
-                          ),
-                          SizedBox(width: 16),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Locaion',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 16,
-                                  letterSpacing: 2,
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                widget.job.location,
-                                style: GoogleFonts.poppins(
-                                  fontSize: 18,
-                                  letterSpacing: 2,
+                  child: Container(
+                    constraints: BoxConstraints(minHeight: screenHeight),
 
-                                  color: Colors.black87,
-                                  fontWeight: FontWeight.w600,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Container(
+                              width: 100,
+                              height: 100,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: NetworkImage(widget.job.imageUrl),
+                                  fit: BoxFit.cover,
                                 ),
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 36),
-                      Text(
-                        'Job Description',
-                        style: GoogleFonts.poppins(
-                          fontSize: 22,
-                          letterSpacing: 2,
-                          color: Colors.black87,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      SizedBox(height: 16),
-                      Text(
-                        widget.job.description,
-                        style: GoogleFonts.poppins(
-                          fontSize: 16,
-                          letterSpacing: 1,
-                          color: Colors.black87,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      Text(
-                        'Requirements',
-                        style: GoogleFonts.poppins(
-                          fontSize: 20,
-                          letterSpacing: 2,
-                          color: Colors.black87,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      SizedBox(height: 16),
-                      ListView.builder(
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: Row(
+                            ),
+                            const SizedBox(width: 16),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Container(
-                                  width: 20,
-                                  height: 20,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Color(0xFF4F4AD3),
-                                  ),
-                                  child: Icon(
-                                    Icons.check,
-                                    color: Colors.white,
-                                    size: 15,
+                                Text(
+                                  widget.job.companyName,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 16,
+                                    letterSpacing: 2,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                SizedBox(width: 10),
-                                Expanded(
+                                SizedBox(height: 4),
+                                SizedBox(
+                                  width: 300,
                                   child: Text(
-                                    widget.job.requirements[index],
+                                    widget.job.title,
                                     style: GoogleFonts.poppins(
-                                      fontSize: 16,
-                                      letterSpacing: 1.2,
+                                      fontSize: 22,
+                                      letterSpacing: 2,
                                       color: Colors.black87,
-                                      fontWeight: FontWeight.w400,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ),
                               ],
                             ),
-                          );
-                        },
-                        itemCount: widget.job.requirements.length,
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                      ),
-                    ],
+                          ],
+                        ),
+                        SizedBox(height: 16),
+                        Row(
+                          children: [
+                            SizedBox(width: 20),
+                            Container(
+                              width: 60, // adjust size as needed
+                              height: 60,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.grey.shade200, // background color
+                              ),
+                              child: Icon(
+                                Icons
+                                    .attach_money, // change to your desired icon
+                                color: Color(0xFF4F4AD3), // icon color
+                                size: 30,
+                              ),
+                            ),
+                            SizedBox(width: 16),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Salary',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 16,
+                                    letterSpacing: 2,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  '\$${widget.job.salary}',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 18,
+                                    letterSpacing: 2,
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 16),
+                        Row(
+                          children: [
+                            SizedBox(width: 20),
+                            Container(
+                              width: 60, // adjust size as needed
+                              height: 60,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.grey.shade200, // background color
+                              ),
+                              child: Icon(
+                                Icons
+                                    .location_city, // change to your desired icon
+                                color: Color(0xFF4F4AD3), // icon color
+                                size: 30,
+                              ),
+                            ),
+                            SizedBox(width: 16),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Locaion',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 16,
+                                    letterSpacing: 2,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  widget.job.location,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 18,
+                                    letterSpacing: 2,
+
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 36),
+                        Text(
+                          'Job Description',
+                          style: GoogleFonts.poppins(
+                            fontSize: 22,
+                            letterSpacing: 2,
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        Text(
+                          widget.job.description,
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            letterSpacing: 1,
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Text(
+                          'Requirements',
+                          style: GoogleFonts.poppins(
+                            fontSize: 20,
+                            letterSpacing: 2,
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        ListView.builder(
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 8.0,
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: 20,
+                                    height: 20,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Color(0xFF4F4AD3),
+                                    ),
+                                    child: Icon(
+                                      Icons.check,
+                                      color: Colors.white,
+                                      size: 15,
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Expanded(
+                                    child: Text(
+                                      widget.job.requirements[index],
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 16,
+                                        letterSpacing: 1.2,
+                                        color: Colors.black87,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                          itemCount: widget.job.requirements.length,
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-              BlocConsumer<ApplicationCubit, ApplicationState>(
-                listener: (context, state) {
-                  if (state is ApplicationSubmitted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Application submitted successfully!'),
-                      ),
-                    );
-                    setState(() {
-                      hasApplied = true;
-                    });
-                  } else if (state is ApplicationError) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Error: ${state.message}')),
-                    );
-                  }
-                },
-                builder: (context, state) {
-                  if (state is ApplicationSubmitting) {
-                    return CircularProgressIndicator();
-                  }
-                  return FutureBuilder<bool>(
-                    future: context
-                        .read<ApplicationCubit>()
-                        .checkApplicationExists(
-                          widget.job.id,
-                          context.read<AuthCubit>().currentUser?.id ?? '',
+              if (context.read<AuthCubit>().currentUser?.role != 'admin')
+                BlocConsumer<ApplicationCubit, ApplicationState>(
+                  listener: (context, state) {
+                    if (state is ApplicationSubmitted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Application submitted successfully!'),
                         ),
-                    builder: (context, snapshot) {
-                      final exists = snapshot.data ?? false;
-                      return Positioned(
-                        bottom: 1,
-                        left: 20,
-                        right: 20,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (exists == true) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'You have already applied for this job.',
+                      );
+                      setState(() {
+                        hasApplied = true;
+                      });
+                    } else if (state is ApplicationError) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Error: ${state.message}')),
+                      );
+                    }
+                  },
+                  builder: (context, state) {
+                    if (state is ApplicationSubmitting) {
+                      return CircularProgressIndicator();
+                    }
+                    return FutureBuilder<bool>(
+                      future: context
+                          .read<ApplicationCubit>()
+                          .checkApplicationExists(
+                            widget.job.id,
+                            context.read<AuthCubit>().currentUser?.id ?? '',
+                          ),
+                      builder: (context, snapshot) {
+                        final exists = snapshot.data ?? false;
+                        return Positioned(
+                          bottom: 1,
+                          left: 20,
+                          right: 20,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (exists == true ||
+                                  widget.job.status == 'closed') {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      widget.job.status == 'closed'
+                                          ? 'This Job don'
+                                                't accept applications anymore '
+                                          : 'You have already applied for this job.',
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
+                              final applicationCubit = context
+                                  .read<ApplicationCubit>();
+
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(16),
+                                  ),
+                                ),
+                                builder: (context) => BlocProvider.value(
+                                  value: applicationCubit, // reuse existing
+                                  child: SubmitApplicationSheet(
+                                    jobId: widget.job.id,
+                                    userId:
+                                        context
+                                            .read<AuthCubit>()
+                                            .currentUser
+                                            ?.id ??
+                                        '',
+                                    scaffoldContext: context,
                                   ),
                                 ),
                               );
-                              return;
-                            }
-                            final applicationCubit = context
-                                .read<ApplicationCubit>();
 
-                            showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
+                              // Handle apply button press
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  exists == true ||
+                                      widget.job.status == 'closed'
+                                  ? Colors.grey.shade300
+                                  : Color(0xFF4F4AD3),
+                              padding: EdgeInsets.symmetric(vertical: 16),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(16),
-                                ),
+                                borderRadius: BorderRadius.circular(30),
                               ),
-                              builder: (context) => BlocProvider.value(
-                                value: applicationCubit, // reuse existing
-                                child: SubmitApplicationSheet(
-                                  jobId: widget.job.id,
-                                  userId:
-                                      context
-                                          .read<AuthCubit>()
-                                          .currentUser
-                                          ?.id ??
-                                      '',
-                                  scaffoldContext: context,
-                                ),
+                            ),
+                            child: Text(
+                              exists == true
+                                  ? 'Already Applied'
+                                  : widget.job.status == 'closed'
+                                  ? 'Closed'
+                                  : 'Apply Now',
+                              style: GoogleFonts.poppins(
+                                fontSize: 18,
+                                letterSpacing: 2,
+                                color:
+                                    exists == true ||
+                                        widget.job.status == 'closed'
+                                    ? Colors.black
+                                    : Colors.white,
+                                fontWeight:
+                                    exists == true ||
+                                        widget.job.status == 'closed'
+                                    ? FontWeight.w500
+                                    : FontWeight.w300,
                               ),
-                            );
-
-                            // Handle apply button press
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: exists == true
-                                ? Colors.grey.shade300
-                                : Color(0xFF4F4AD3),
-                            padding: EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
                             ),
                           ),
-                          child: Text(
-                            exists == true ? 'Already Applied' : 'Apply Now',
-                            style: GoogleFonts.poppins(
-                              fontSize: 18,
-                              letterSpacing: 2,
-                              color: exists == true
-                                  ? Colors.black
-                                  : Colors.white,
-                              fontWeight: exists == true
-                                  ? FontWeight.w500
-                                  : FontWeight.w300,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
+                        );
+                      },
+                    );
+                  },
+                ),
             ],
           ),
         ),
