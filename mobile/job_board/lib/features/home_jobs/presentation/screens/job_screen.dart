@@ -2,9 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:job_board/core/services/service_locator.dart';
 import 'package:job_board/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:job_board/features/auth/presentation/screens/log_in_screen.dart';
 import 'package:job_board/features/home_jobs/data/repo/job_repo.dart';
+import 'package:job_board/features/home_jobs/presentation/components/add_job_bottom_sheet.dart';
 import 'package:job_board/features/home_jobs/presentation/cubit/job_cubit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:job_board/features/home_jobs/presentation/cubit/job_state.dart';
+import 'package:job_board/features/job_details/presentation/screens/job_details_screen.dart';
+import 'package:job_board/features/job_applications/data/repo/applications_repo.dart';
+import 'package:job_board/features/job_applications/presentation/cubit/application_cubit.dart';
+import 'package:lottie/lottie.dart';
 
 class JobScreen extends StatefulWidget {
   const JobScreen({super.key});
@@ -38,22 +45,36 @@ class _JobScreenState extends State<JobScreen> {
           ),
         ),
         centerTitle: true,
-        // actions: [
-        //   IconButton(
-        //     icon: const Icon(Icons.search, color: Colors.white),
-        //     onPressed: () {
-        //       // Implement search logic
-        //     },
-        //   ),
-        // ],
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout, color: Colors.white),
+            onPressed: () {
+              context.read<AuthCubit>().logout();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => LogInScreen()),
+              );
+              // Implement logout logic
+            },
+          ),
+        ],
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
         ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: BlocProvider(
-            create: (context) => JobCubit(locator<JobRepository>())..loadJobs(),
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) =>
+                    JobCubit(locator<JobRepository>())..loadJobs(),
+              ),
+              BlocProvider(
+                create: (context) =>
+                    ApplicationCubit(locator<ApplicationRepo>()),
+              ),
+            ],
             child: BlocBuilder<JobCubit, JobState>(
               builder: (context, state) {
                 if (state is JobLoading) {
@@ -174,6 +195,7 @@ class _JobScreenState extends State<JobScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,18 +220,56 @@ class _JobScreenState extends State<JobScreen> {
                                 ),
                               ],
                             ),
+                            if (context.read<AuthCubit>().currentUser?.role ==
+                                'admin')
+                              ElevatedButton.icon(
+                                onPressed: () {
+                                  showAddJobSheet(context, null);
+                                },
+                                icon: const Icon(Icons.add),
+                                label: Text(
+                                  'Add Job',
+                                  style: GoogleFonts.poppins(
+                                    letterSpacing: 1.2,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF4F4AD3),
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 12,
+                                  ),
+                                ),
+                              ),
                           ],
                         ),
                       ),
                       if (state is JobLoaded && state.jobs.isEmpty)
-                        Center(
-                          child: Text(
-                            'No jobs found',
-                            style: GoogleFonts.poppins(
-                              fontSize: 18,
-                              color: Colors.grey,
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(height: 20),
+                            Center(
+                              child: Text(
+                                'No jobs found !!',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black54,
+                                ),
+                              ),
                             ),
-                          ),
+                            SizedBox(height: 20),
+                            Center(
+                              child: Lottie.asset('assets/non data found.json'),
+                            ),
+                          ],
                         )
                       else if (state is JobLoaded)
                         Padding(
@@ -223,106 +283,244 @@ class _JobScreenState extends State<JobScreen> {
                             itemCount: state.jobs.length,
                             itemBuilder: (context, index) {
                               final job = state.jobs[index];
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  height: 120,
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12),
-                                    color: Colors.grey.shade200,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        width: 10,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(12),
-                                            bottomLeft: Radius.circular(12),
-                                          ),
-                                          color: job.status == 'open'
-                                              ? Colors.green.shade500
-                                              : Colors.red.shade500,
-                                        ),
+                              return GestureDetector(
+                                onTap: () async {
+                                  final result = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          JobDetailsScreen(job: job),
+                                    ),
+                                  );
+
+                                  if (result == true) {
+                                    // User applied and went back
+                                    context
+                                        .read<JobCubit>()
+                                        .loadJobs(); // reload job list
+                                    // setState(
+                                    //   () {},
+                                    // ); // rebuild to update applied UI
+                                  }
+                                },
+                                child: FutureBuilder<bool>(
+                                  future: context
+                                      .read<ApplicationCubit>()
+                                      .checkApplicationExists(
+                                        job.id,
+                                        context
+                                                .read<AuthCubit>()
+                                                .currentUser
+                                                ?.id ??
+                                            '',
                                       ),
-                                      const SizedBox(width: 10),
-                                      Expanded(
-                                        child: Column(
+                                  builder: (context, snapshot) {
+                                    final exists = snapshot.data ?? false;
+                                    return Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        height: 120,
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          color: Colors.grey.shade200,
+                                        ),
+                                        child: Row(
                                           children: [
-                                            SizedBox(height: 10),
-                                            Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Image.network(
-                                                  job.imageUrl,
-                                                  width: 70,
-                                                  height: 70,
+                                            Container(
+                                              width: 10,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(12),
+                                                  bottomLeft: Radius.circular(
+                                                    12,
+                                                  ),
                                                 ),
-                                                const SizedBox(width: 15),
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      job.title,
-                                                      style:
-                                                          GoogleFonts.poppins(
-                                                            fontSize: 18,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            color:
-                                                                Colors.black87,
-                                                          ),
-                                                    ),
-                                                    const SizedBox(height: 5),
-                                                    Text(
-                                                      job.companyName,
-                                                      style:
-                                                          GoogleFonts.poppins(
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            color:
-                                                                Colors.black54,
-                                                          ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
+                                                color: job.status == 'open'
+                                                    ? Colors.green.shade500
+                                                    : Colors.red.shade500,
+                                              ),
                                             ),
-                                            SizedBox(height: 10),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 20.0,
-                                                  ),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
+                                            const SizedBox(width: 10),
+                                            Expanded(
+                                              child: Column(
                                                 children: [
-                                                  Text(
-                                                    job.location,
-                                                    style: GoogleFonts.poppins(
-                                                      fontSize: 16,
-                                                      color: Colors.black54,
-                                                      letterSpacing: 1,
-                                                      fontWeight:
-                                                          FontWeight.w600,
+                                                  SizedBox(height: 10),
+                                                  Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Image.network(
+                                                        job.imageUrl,
+                                                        width: 70,
+                                                        height: 70,
+                                                      ),
+                                                      const SizedBox(width: 15),
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            job.title,
+                                                            style:
+                                                                GoogleFonts.poppins(
+                                                                  fontSize: 18,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  color: Colors
+                                                                      .black87,
+                                                                ),
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 5,
+                                                          ),
+                                                          Text(
+                                                            job.companyName,
+                                                            style:
+                                                                GoogleFonts.poppins(
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: Colors
+                                                                      .black54,
+                                                                ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Spacer(),
+                                                      if (context
+                                                              .read<AuthCubit>()
+                                                              .currentUser
+                                                              ?.role ==
+                                                          'admin')
+                                                        IconButton(
+                                                          onPressed: () {
+                                                            context
+                                                                .read<
+                                                                  JobCubit
+                                                                >()
+                                                                .deleteJob(
+                                                                  job.id,
+                                                                );
+                                                            // Handle edit action
+                                                          },
+                                                          icon: Icon(
+                                                            Icons.delete,
+                                                            size: 20,
+                                                          ),
+                                                          color: Colors.red,
+                                                        ),
+                                                      // SizedBox(width: 5),
+                                                      if (context
+                                                              .read<AuthCubit>()
+                                                              .currentUser
+                                                              ?.role ==
+                                                          'admin')
+                                                        IconButton(
+                                                          onPressed: () {
+                                                            // Handle edit action
+                                                            showAddJobSheet(
+                                                              context,
+                                                              job,
+                                                            );
+                                                          },
+                                                          icon: Icon(
+                                                            Icons.edit,
+                                                            size: 20,
+                                                          ),
+                                                          color: Colors.blue,
+                                                        ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(height: 10),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.symmetric(
+                                                          horizontal: 20.0,
+                                                        ),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          exists == true
+                                                          ? MainAxisAlignment
+                                                                .spaceBetween
+                                                          : MainAxisAlignment
+                                                                .end,
+                                                      children: [
+                                                        if (exists == true)
+                                                          Row(
+                                                            children: [
+                                                              Container(
+                                                                width: 10,
+                                                                height: 10,
+                                                                decoration: BoxDecoration(
+                                                                  color: Colors
+                                                                      .green
+                                                                      .shade800,
+                                                                  shape: BoxShape
+                                                                      .circle,
+                                                                ),
+                                                                padding:
+                                                                    EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          8,
+                                                                      vertical:
+                                                                          4,
+                                                                    ),
+                                                                child: Text(''),
+                                                              ),
+                                                              const SizedBox(
+                                                                width: 10,
+                                                              ),
+                                                              Text(
+                                                                'Applied',
+                                                                style: GoogleFonts.poppins(
+                                                                  fontSize: 16,
+                                                                  color: Colors
+                                                                      .green,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  letterSpacing:
+                                                                      2,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        Text(
+                                                          job.location,
+                                                          style:
+                                                              GoogleFonts.poppins(
+                                                                fontSize: 16,
+                                                                color: Colors
+                                                                    .black54,
+                                                                letterSpacing:
+                                                                    1,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                              ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
+                                                  SizedBox(height: 5),
                                                 ],
                                               ),
                                             ),
-                                            SizedBox(height: 5),
                                           ],
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    );
+                                  },
                                 ),
                               );
 

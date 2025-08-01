@@ -26,7 +26,7 @@ class MockAuthRepository {
   Future<UserModel?> login(String email, String password) async {
     await Future.delayed(const Duration(milliseconds: 500));
     final user = _userBox.values.firstWhere(
-      (u) => u.email == email && u.password == password,
+      (u) => u.email == email.toLowerCase() && u.password == password,
       orElse: () => throw Exception("Invalid credentials"),
     );
     final sessionBox = await Hive.openBox('sessionBox');
@@ -42,13 +42,13 @@ class MockAuthRepository {
   ) async {
     await Future.delayed(const Duration(milliseconds: 500));
 
-    final exists = _userBox.values.any((u) => u.email == email);
+    final exists = _userBox.values.any((u) => u.email == email.toLowerCase());
     if (exists) throw Exception("Email already exists");
 
     final newUser = UserModel(
       id: _uuid.v4(),
       fullName: fullName,
-      email: email,
+      email: email.toLowerCase(),
       password: password,
       role: 'jobseeker',
     );
@@ -71,8 +71,6 @@ class MockAuthRepository {
       return null;
     }
   }
-
-  List<UserModel> getAllUsers() => _userBox.values.toList();
 
   Future<void> logout() async {
     final sessionBox = await Hive.openBox('sessionBox');

@@ -26,13 +26,15 @@ class JobAdapter extends TypeAdapter<Job> {
       createdBy: fields[6] as String,
       imageUrl: fields[7] as String,
       companyName: fields[8] as String,
+      requirements: (fields[9] as List).cast<String>(),
+      createdAt: fields[10] as DateTime? ?? DateTime.now(),
     );
   }
 
   @override
   void write(BinaryWriter writer, Job obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -50,7 +52,11 @@ class JobAdapter extends TypeAdapter<Job> {
       ..writeByte(7)
       ..write(obj.imageUrl)
       ..writeByte(8)
-      ..write(obj.companyName);
+      ..write(obj.companyName)
+      ..writeByte(9)
+      ..write(obj.requirements)
+      ..writeByte(10)
+      ..write(obj.createdAt);
   }
 
   @override

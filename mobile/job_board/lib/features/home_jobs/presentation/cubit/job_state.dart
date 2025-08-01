@@ -1,4 +1,4 @@
-part of 'job_cubit.dart';
+import 'package:job_board/features/home_jobs/data/models/job_model.dart';
 
 abstract class JobState {}
 

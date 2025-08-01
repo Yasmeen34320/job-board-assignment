@@ -57,6 +57,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:job_board/features/home_jobs/presentation/screens/job_screen.dart';
 import 'package:job_board/features/home_jobs/test.dart';
 import 'package:job_board/features/job_applications/presentation/screens/applications_screen.dart';
+import 'package:job_board/features/users/presentation/screens/users_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   final String role;
@@ -76,7 +77,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     final isAdmin = widget.role == 'admin';
 
     final screens = isAdmin
-        ? [JobScreen(), Test(), ApplicationsScreen(), Test()]
+        ? [JobScreen(), UsersScreen(), ApplicationsScreen(), Test()]
         : [JobScreen(), ApplicationsScreen(), Test()];
 
     final items = isAdmin

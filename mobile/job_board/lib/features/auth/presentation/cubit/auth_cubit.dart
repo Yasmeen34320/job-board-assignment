@@ -8,6 +8,14 @@ class AuthCubit extends Cubit<AuthState> {
 
   AuthCubit(this.authRepo) : super(AuthInitial());
 
+  UserModel? get currentUser {
+    if (state is loggedInSuccess) {
+      return (state as loggedInSuccess).user;
+    } else {
+      return null;
+    }
+  }
+
   getCurrentUser() async {
     emit(AuthLoading());
     try {

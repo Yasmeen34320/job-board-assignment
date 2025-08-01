@@ -190,7 +190,7 @@ class SignUpScreen extends StatelessWidget {
                                   );
                                 },
                                 child: Text(
-                                  'Sign In',
+                                  'Log In',
                                   style: GoogleFonts.poppins(
                                     color: Color(0xFF4F4AD3),
                                     fontSize: 16,

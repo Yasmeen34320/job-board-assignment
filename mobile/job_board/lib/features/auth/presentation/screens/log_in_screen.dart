@@ -191,7 +191,7 @@ class LogInScreen extends StatelessWidget {
                                   ),
                                   fixedSize: Size(400, 48),
                                 ),
-                                child: Text('Sign In'),
+                                child: Text('Log In'),
                               ),
                             SizedBox(height: 20),
                             Row(

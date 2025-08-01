@@ -13,6 +13,7 @@ import 'package:job_board/features/auth/presentation/screens/log_in_screen.dart'
 import 'package:job_board/features/auth/presentation/screens/sign_up_screen.dart';
 import 'package:job_board/features/home_jobs/data/models/job_model.dart';
 import 'package:job_board/features/home_jobs/test.dart';
+import 'package:job_board/features/job_applications/data/models/application_model.dart';
 import 'package:job_board/features/splash/splash_screen.dart';
 
 void main() async {
@@ -23,7 +24,11 @@ void main() async {
   await Hive.openBox<UserModel>('users');
   await Hive.openBox('sessionBox');
   Hive.registerAdapter(JobAdapter());
+  // Hive.deleteBoxFromDisk('jobs');
+
   await Hive.openBox<Job>('jobs');
+  Hive.registerAdapter(ApplicationModelAdapter());
+  await Hive.openBox<ApplicationModel>('applications');
   setupLocator(); // ⬅ Initialize your service locator
   runApp(const MyApp());
 }
@@ -50,18 +55,6 @@ class MyApp extends StatelessWidget {
         ),
         debugShowCheckedModeBanner: false,
         home: SplashScreen(),
-
-        // home: BlocBuilder<AuthCubit, AuthState>(
-        //   builder: (context, state) {
-        //     if (state is AuthLoading) {
-        //       return Center(child: CircularProgressIndicator());
-        //     } else if (state is AuthSuccess) {
-        //       return Test(); // Assuming this is the admin screen
-        //       //return HomeScreen(user: state.user);
-        //     } else {
-        //       return LogInScreen();
-        //     }
-        //   },
       ),
     );
   }
