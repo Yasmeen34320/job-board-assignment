@@ -64,16 +64,32 @@ class _JobDetailsScreenState extends State<JobDetailsScreen> {
                         SizedBox(height: 16),
                         Row(
                           children: [
-                            Container(
-                              width: 100,
-                              height: 100,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: NetworkImage(widget.job.imageUrl),
-                                  fit: BoxFit.cover,
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Container(
+                                height: 100,
+                                width: 100,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[300], // gray background
+                                  borderRadius: BorderRadius.circular(12),
+                                  image: DecorationImage(
+                                    image: NetworkImage(widget.job.imageUrl),
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
                             ),
+
+                            // Container(
+                            //   width: 100,
+                            //   height: 100,
+                            //   decoration: BoxDecoration(
+                            //     image: DecorationImage(
+                            //       image: NetworkImage(widget.job.imageUrl),
+                            //       fit: BoxFit.cover,
+                            //     ),
+                            //   ),
+                            // ),
                             const SizedBox(width: 16),
                             Column(
                               mainAxisAlignment: MainAxisAlignment.start,

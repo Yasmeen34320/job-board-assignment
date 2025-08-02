@@ -368,12 +368,30 @@ class _JobScreenState extends State<JobScreen> {
                                                           BorderRadius.circular(
                                                             8,
                                                           ),
-                                                      child: Image.network(
-                                                        job?.imageUrl ?? '',
-                                                        width: 70,
+                                                      child: Container(
                                                         height: 70,
-                                                        fit: BoxFit.cover,
+                                                        width: 70,
+                                                        decoration: BoxDecoration(
+                                                          color: Colors
+                                                              .grey[300], // gray background
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                12,
+                                                              ),
+                                                          image: DecorationImage(
+                                                            image: NetworkImage(
+                                                              job.imageUrl,
+                                                            ),
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                        ),
                                                       ),
+                                                      //  Image.network(
+                                                      //   job?.imageUrl ?? '',
+                                                      //   width: 70,
+                                                      //   height: 70,
+                                                      //   fit: BoxFit.cover,
+                                                      // ),
                                                     ),
                                                     const SizedBox(width: 15),
                                                     Column(

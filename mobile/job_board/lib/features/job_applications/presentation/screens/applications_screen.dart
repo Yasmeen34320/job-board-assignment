@@ -64,7 +64,7 @@ class _ApplicationsScreenState extends State<ApplicationsScreen> {
             ),
 
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
             child: BlocBuilder<ApplicationCubit, ApplicationState>(
               builder: (context, state) => SizedBox(
                 height: 50,
@@ -125,36 +125,36 @@ class _ApplicationsScreenState extends State<ApplicationsScreen> {
 
           SizedBox(height: 8),
 
-          // if (context.read<AuthCubit>().currentUser?.role == 'admin')
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: BlocBuilder<ApplicationCubit, ApplicationState>(
-              builder: (context, state) {
-                search.text = context.read<ApplicationCubit>().searchQuery;
-                return TextField(
-                  controller: search,
-                  decoration: InputDecoration(
-                    focusColor: Color(0xFF4F4AD3),
-                    hintText: 'Search by full name...',
-                    prefixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+          if (context.read<AuthCubit>().currentUser?.role == 'admin')
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: BlocBuilder<ApplicationCubit, ApplicationState>(
+                builder: (context, state) {
+                  search.text = context.read<ApplicationCubit>().searchQuery;
+                  return TextField(
+                    controller: search,
+                    decoration: InputDecoration(
+                      focusColor: Color(0xFF4F4AD3),
+                      hintText: 'Search by full name...',
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
-                  ),
 
-                  onChanged: (value) {
-                    context.read<ApplicationCubit>().searchQuery = value;
-                    context.read<ApplicationCubit>().getAllApplications(
-                      context.read<AuthCubit>().currentUser?.id ?? '',
-                    );
-                    // setState(() {
-                    //   searchQuery = value;
-                    // });
-                  },
-                );
-              },
+                    onChanged: (value) {
+                      context.read<ApplicationCubit>().searchQuery = value;
+                      context.read<ApplicationCubit>().getAllApplications(
+                        context.read<AuthCubit>().currentUser?.id ?? '',
+                      );
+                      // setState(() {
+                      //   searchQuery = value;
+                      // });
+                    },
+                  );
+                },
+              ),
             ),
-          ),
 
           SizedBox(height: 10),
           BlocBuilder<ApplicationCubit, ApplicationState>(
@@ -248,11 +248,23 @@ class _ApplicationsScreenState extends State<ApplicationsScreen> {
                                                 ClipRRect(
                                                   borderRadius:
                                                       BorderRadius.circular(8),
-                                                  child: Image.network(
-                                                    job?.imageUrl ?? '',
-                                                    width: 60,
-                                                    height: 60,
-                                                    fit: BoxFit.cover,
+                                                  child: Container(
+                                                    height: 70,
+                                                    width: 70,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors
+                                                          .grey[300], // gray background
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            12,
+                                                          ),
+                                                      image: DecorationImage(
+                                                        image: NetworkImage(
+                                                          job?.imageUrl ?? "",
+                                                        ),
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
                                                   ),
                                                 ),
 
@@ -404,52 +416,60 @@ class _ApplicationsScreenState extends State<ApplicationsScreen> {
                                               ),
                                             ),
                                             SizedBox(height: 8),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 14.0,
-                                                  ),
-                                              child: Row(
-                                                children: [
-                                                  Container(
-                                                    decoration: BoxDecoration(
-                                                      color:
-                                                          Colors.green.shade50,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            12,
-                                                          ),
+                                            if (context
+                                                    .read<AuthCubit>()
+                                                    .currentUser
+                                                    ?.role ==
+                                                'admin')
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 14.0,
                                                     ),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.symmetric(
-                                                            vertical: 4.0,
-                                                            horizontal: 16,
-                                                          ),
-                                                      child: Text(
-                                                        user?.fullName ?? "",
-                                                        style:
-                                                            GoogleFonts.poppins(
-                                                              letterSpacing: 2,
-                                                              fontSize: 16,
-                                                              color: Colors
-                                                                  .green
-                                                                  .shade700,
+                                                child: Row(
+                                                  children: [
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                        color: Colors
+                                                            .green
+                                                            .shade50,
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              12,
                                                             ),
                                                       ),
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets.symmetric(
+                                                              vertical: 4.0,
+                                                              horizontal: 16,
+                                                            ),
+                                                        child: Text(
+                                                          user?.fullName ?? "",
+                                                          style:
+                                                              GoogleFonts.poppins(
+                                                                letterSpacing:
+                                                                    2,
+                                                                fontSize: 16,
+                                                                color: Colors
+                                                                    .green
+                                                                    .shade700,
+                                                              ),
+                                                        ),
+                                                      ),
                                                     ),
-                                                  ),
-                                                  SizedBox(width: 10),
-                                                  Text(
-                                                    'Applied',
-                                                    style: GoogleFonts.poppins(
-                                                      letterSpacing: 2,
-                                                      fontSize: 16,
+                                                    SizedBox(width: 10),
+                                                    Text(
+                                                      'Applied',
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                            letterSpacing: 2,
+                                                            fontSize: 16,
+                                                          ),
                                                     ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
-                                            ),
                                             SizedBox(height: 8),
                                             if (context
                                                     .read<AuthCubit>()

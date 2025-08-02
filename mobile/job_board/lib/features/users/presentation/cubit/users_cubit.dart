@@ -24,4 +24,8 @@ class UsersCubit extends Cubit<UsersState> {
   Future<void> addnewAdmin(UserModel admin) async {
     await usersRepo.addNewAdmin(admin);
   }
+
+  Future<void> removeAdmin(UserModel admin) async {
+    await usersRepo.removeAdmin(admin);
+  }
 }

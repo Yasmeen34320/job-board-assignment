@@ -79,8 +79,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     final isAdmin = widget.role == 'admin';
 
     final screens = isAdmin
-        ? [JobScreen(), UsersScreen(), ApplicationsScreen(), Test()]
-        : [JobScreen(), ApplicationsScreen(), Test()];
+        ? [JobScreen(), UsersScreen(), ApplicationsScreen()]
+        : [JobScreen(), ApplicationsScreen()];
 
     final items = isAdmin
         ? const [
@@ -90,7 +90,6 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
               icon: Icon(Icons.assignment),
               label: 'Applications',
             ),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
           ]
         : const [
             BottomNavigationBarItem(icon: Icon(Icons.work), label: 'Jobs'),
@@ -98,7 +97,6 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
               icon: Icon(Icons.assignment),
               label: 'My Applications',
             ),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
           ];
 
     return BlocBuilder<MainLayoutCubit, int>(

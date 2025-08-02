@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:job_board/core/services/service_locator.dart';
+import 'package:job_board/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:job_board/features/home_jobs/presentation/cubit/navigation_cubit/navigation_cubit.dart';
 import 'package:job_board/features/job_applications/data/models/application_model.dart';
 import 'package:job_board/features/job_applications/presentation/cubit/application_cubit.dart';
@@ -48,11 +49,46 @@ class UsersScreen extends StatelessWidget {
                       child: ListView.separated(
                         itemBuilder: (context, index) {
                           final user = state.adminUsers[index];
+                          final isThisUser =
+                              context.read<AuthCubit>().currentUser?.fullName ==
+                              user.fullName;
                           return ListTile(
                             leading: CircleAvatar(
                               radius: 30,
                               child: Text(user.fullName[0]),
                             ),
+                            trailing: (isThisUser
+                                ? Container(
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF4F4AD3),
+                                      borderRadius: BorderRadius.circular(25),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        'You',
+                                        style: GoogleFonts.poppins(
+                                          letterSpacing: 2,
+                                          fontSize: 14,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                : IconButton(
+                                    icon: Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
+                                      size: 25,
+                                    ),
+                                    onPressed: () {
+                                      context.read<UsersCubit>().removeAdmin(
+                                        user,
+                                      );
+                                      context.read<UsersCubit>().getAllUsers();
+                                    },
+                                  )),
                             title: Text(
                               user.fullName,
                               style: GoogleFonts.poppins(
@@ -151,6 +187,10 @@ class UsersScreen extends StatelessWidget {
                                   children: [
                                     Text(
                                       'Made a ${applicationsCount} Applications',
+                                      style: GoogleFonts.poppins(
+                                        letterSpacing: 1,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
                                     ElevatedButton(
                                       style: ElevatedButton.styleFrom(
@@ -168,7 +208,12 @@ class UsersScreen extends StatelessWidget {
                                               2,
                                             ); // go to Applications tab
                                       },
-                                      child: Text('view'),
+                                      child: Text(
+                                        'view',
+                                        style: GoogleFonts.poppins(
+                                          letterSpacing: 1,
+                                        ),
+                                      ),
                                     ),
                                   ],
                                 ),

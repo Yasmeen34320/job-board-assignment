@@ -10,4 +10,15 @@ class UsersRepository {
   Future<void> addNewAdmin(UserModel admin) async {
     await users.put(admin.id, admin);
   }
+
+  Future<void> removeAdmin(UserModel admin) async {
+    final keyToDelete = users.keys.firstWhere(
+      (key) => users.get(key)?.id == admin.id,
+      orElse: () => null,
+    );
+
+    if (keyToDelete != null) {
+      await users.delete(keyToDelete);
+    }
+  }
 }
