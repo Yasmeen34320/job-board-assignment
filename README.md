@@ -73,3 +73,37 @@ npm run dev
 cd mobile
 flutter pub get
 flutter run
+```
+
+---
+
+## 📝 Assumptions Made
+
+- Data persistence for both platforms is handled locally:
+  - **Hive** for mobile
+  - **localStorage** for web
+- Users are separated by role (**admin** / **jobseeker**) during registration
+- Basic validation and mock protection are implemented
+- Additional model fields (e.g., `timestamp`, `IDs`) were added to improve display and usability
+- Data is mocked using `localStorage` and `Hive`, so **no backend setup is needed**
+
+---
+
+## ⚠️ Known Limitations
+
+- No real backend or REST API integration
+- Authentication is mocked and **not encrypted**
+- Domain layer was skipped in the Flutter app due to time constraints 
+
+---
+
+## 📌 Areas for Improvement (If Given More Time)
+
+- Implement full backend but using **Nodejs + Mongodb**
+- Use **React Query** with real APIs in the frontend
+- use **Axios Or fetch** with real APIs in the mobile
+- Add support for **Dark Mode** and improve overall accessibility
+
+
+
+
