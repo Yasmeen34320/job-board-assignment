@@ -23,3 +23,6 @@ export const removeCurrentUser = () => {
     localStorage.removeItem("currentUser");
   }
 };
+export const clearUsers = () => {
+  localStorage.removeItem("users");
+};

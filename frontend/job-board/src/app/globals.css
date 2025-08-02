@@ -34,3 +34,6 @@ body {
   /* font-size: 20px; */
   letter-spacing: 2px;
 }
+.input {
+  @apply w-full border p-2 rounded border-gray-300;
+}

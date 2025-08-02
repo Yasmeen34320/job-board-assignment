@@ -6,7 +6,10 @@ import { RiUserAddLine } from "react-icons/ri";
 import { CiSearch } from "react-icons/ci";
 import { RiSendPlaneLine } from "react-icons/ri";
 import { mockUsers } from '@/data/mockUsers';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { getJobsFromLocalStorage } from "@/utils/jobsUtils";
+import { clearUsers } from "@/utils/getCurrentUser";
 
 
 export default function Home() {
@@ -30,71 +33,76 @@ export default function Home() {
       desc:"Submit applications with your resume and connect directly with hiring managers."
     },
   ]
-   const mockJobs = [
-  {
-    id: "1",
-    title: "Frontend Developer",
-    company: "TechHive Inc.",
-    location: "Cairo, Egypt",
-    imageUrl: "https://i.pinimg.com/1200x/3c/4d/dc/3c4ddc369add7df5414171508f099c9a.jpg",
-    description: "We are looking for a skilled frontend developer with React.js experience.",
-    salary: "15,000 EGP/month",
-    type: "Full-time",
-    postedAt: "2025-07-30",
-  },
-  {
-    id: "2",
-    title: "Backend Developer",
-    company: "CodeWave",
-    location: "Remote",
-    imageUrl: "https://i.pinimg.com/1200x/db/bd/b5/dbbdb52017ffdce38af556366ae68793.jpg",
-    description: "Join our backend team working with Node.js and MongoDB.",
-    salary: "18,000 EGP/month",
-    type: "Remote",
-    postedAt: "2025-07-29",
-  },
-  {
-    id: "3",
-    title: "Mobile Developer",
-    company: "Ottopay",
-    location: "Alexandria, Egypt",
-    imageUrl: "https://i.pinimg.com/1200x/a5/9d/ac/a59dacd9d970f0e467a0bcad83e63041.jpg",
-    description: "Develop cross-platform apps using Flutter for our growing startup.",
-    salary: "12,000 EGP/month",
-    type: "Part-time",
-    postedAt: "2025-07-25",
-  },
-  // {
-  //   id: "4",
-  //   title: "UI/UX Designer",
-  //   company: "DesignPro",
-  //   location: "Giza, Egypt",
-  //   imageUrl: "/company-logos/designpro.png",
-  //   description: "Create intuitive UI designs and user experiences for web and mobile apps.",
-  //   salary: "10,000 EGP/month",
-  //   type: "Contract",
-  //   postedAt: "2025-07-20",
-  // },
-  // {
-  //   id: "5",
-  //   title: "DevOps Engineer",
-  //   company: "CloudScale",
-  //   location: "Remote",
-  //   imageUrl: "/company-logos/cloudscale.png",
-  //   description: "Automate infrastructure and CI/CD pipelines using Docker and Kubernetes.",
-  //   salary: "20,000 EGP/month",
-  //   type: "Full-time",
-  //   postedAt: "2025-07-18",
-  // }
-];
-
+//    const mockJobs = [
+//   {
+//     id: "1",
+//     title: "Frontend Developer",
+//     company: "TechHive Inc.",
+//     location: "Cairo, Egypt",
+//     imageUrl: "https://i.pinimg.com/1200x/3c/4d/dc/3c4ddc369add7df5414171508f099c9a.jpg",
+//     description: "We are looking for a skilled frontend developer with React.js experience.",
+//     salary: "15,000 EGP/month",
+//     type: "Full-time",
+//     postedAt: "2025-07-30",
+//   },
+//   {
+//     id: "2",
+//     title: "Backend Developer",
+//     company: "CodeWave",
+//     location: "Remote",
+//     imageUrl: "https://i.pinimg.com/1200x/db/bd/b5/dbbdb52017ffdce38af556366ae68793.jpg",
+//     description: "Join our backend team working with Node.js and MongoDB.",
+//     salary: "18,000 EGP/month",
+//     type: "Remote",
+//     postedAt: "2025-07-29",
+//   },
+//   {
+//     id: "3",
+//     title: "Mobile Developer",
+//     company: "Ottopay",
+//     location: "Alexandria, Egypt",
+//     imageUrl: "https://i.pinimg.com/1200x/a5/9d/ac/a59dacd9d970f0e467a0bcad83e63041.jpg",
+//     description: "Develop cross-platform apps using Flutter for our growing startup.",
+//     salary: "12,000 EGP/month",
+//     type: "Part-time",
+//     postedAt: "2025-07-25",
+//   },
+//   // {
+//   //   id: "4",
+//   //   title: "UI/UX Designer",
+//   //   company: "DesignPro",
+//   //   location: "Giza, Egypt",
+//   //   imageUrl: "/company-logos/designpro.png",
+//   //   description: "Create intuitive UI designs and user experiences for web and mobile apps.",
+//   //   salary: "10,000 EGP/month",
+//   //   type: "Contract",
+//   //   postedAt: "2025-07-20",
+//   // },
+//   // {
+//   //   id: "5",
+//   //   title: "DevOps Engineer",
+//   //   company: "CloudScale",
+//   //   location: "Remote",
+//   //   imageUrl: "/company-logos/cloudscale.png",
+//   //   description: "Automate infrastructure and CI/CD pipelines using Docker and Kubernetes.",
+//   //   salary: "20,000 EGP/month",
+//   //   type: "Full-time",
+//   //   postedAt: "2025-07-18",
+//   // }
+// ];
+const [mockJobs,setJobs]=useState([]);
 // On first load:
 useEffect(() => {
+  // clearUsers()
   const stored = localStorage.getItem('users');
   if (!stored) {
     localStorage.setItem('users', JSON.stringify(mockUsers));
   }
+  const jobs=getJobsFromLocalStorage().slice(0,3);
+setJobs(jobs)
 }, []);
+
+  const { isLoggedIn } = useAuth();
 
   return (
     <>
@@ -110,7 +118,7 @@ useEffect(() => {
           Connect with top employers and advance your career with our comprehensive job platform
         </p>
         <div className="flex justify-center gap-4">
-          <Link href="/signup">
+          <Link href={isLoggedIn ? '/' : '/signup'}>
             <button className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Get Started</button>
           </Link>
           <Link href="/jobs">
@@ -169,8 +177,18 @@ useEffect(() => {
                   <h2 className=" font-semibold ">{element.title}</h2>
                   <p className="text-sm mt-4 font-semibold text-gray-500">{element.company}</p>
                   <p className="text-xs mt-2 font-semibold text-gray-400">{element.location}</p>
-                  <p className="text-sm mt-2 font-semibold text-green-600">${element.salary}</p>
+                  <p className="text-sm mt-2 font-semibold text-green-600">{element.salary}</p>
+                 <div className="flex  w-full items-center justify-between">
                   <Link href={`/jobs/${element.id}`} className="bg-blue-700 text-white p-2 rounded-lg mt-4 px-4 text-sm">View Details</Link>
+                  <div
+  className={`h-7 p-2 rounded-2xl flex items-center tracking-[.em] mt-4
+    ${element.status === 'open' ? 'bg-gray-100 text-green-800' : 'bg-gray-100 text-red-600'}
+  
+  `}
+>
+  <p className="text-xs">{element.status}</p>
+</div>
+                 </div>
                   </div>
         </div>
 

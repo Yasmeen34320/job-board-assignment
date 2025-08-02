@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import {
   getJobsFromLocalStorage,
   addJobToLocalStorage,
+  clearJobs,
 } from "@/utils/jobsUtils";
 import { getCurrentUser } from "@/utils/getCurrentUser";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 export default function JobsPage() {
   const [jobs, setJobs] = useState([]);
@@ -18,20 +20,96 @@ export default function JobsPage() {
     imageUrl: "",
     description: "",
     type: "",
+    createdBy:"",
+    requirements:""
   });
+ 
 
-  const user = getCurrentUser();
+  
+const exampleJobs = [
+  {
+    id: "1690101010101",
+    title: "Frontend Developer",
+    company: "TechCorp",
+    location: "Cairo, Egypt",
+    salary: "15,000 EGP/month",
+    imageUrl: "https://i.pinimg.com/1200x/6c/dc/64/6cdc649e7b1ba49359d9e1484b841038.jpg",
+    description: "We are looking for a skilled React developer to join our frontend team.",
+    type: "Full-time",
+    createdBy: "admin123",
+    postedAt: "2025-08-01",
+    status: "open",
+    requirements: [
+      "Must have experience with React and TypeScript.",
+      "Proficiency in using Git for version control.",
+      "Ability to consume and integrate REST APIs.",
+      "Good understanding of responsive design and browser compatibility."
+    ]
+  },
+  {
+    id: "1690102020202",
+    title: "Backend Developer",
+    company: "CodeWorks",
+    location: "Remote",
+    salary: "$3000/month",
+    imageUrl: "https://i.pinimg.com/1200x/85/f2/56/85f256a4ff66cc32bb0175eb43e1dc04.jpg",
+    description: "Responsible for developing scalable backend services with Node.js.",
+    type: "Full-time",
+    createdBy: "admin456",
+    postedAt: "2025-08-02",
+    status: "open",
+    requirements: [
+      "Strong experience with Node.js and Express framework.",
+      "Familiarity with MongoDB and Mongoose.",
+      "Understanding of authentication methods like JWT.",
+      "Experience with building RESTful APIs and error handling."
+    ]
+  },
+  {
+    id: "1690103030303",
+    title: "UI/UX Designer",
+    company: "DesignHub",
+    location: "Alexandria, Egypt",
+    salary: "12,000 EGP/month",
+    imageUrl: "https://i.pinimg.com/736x/b5/6d/02/b56d02619bdd5a3ef333e5cc4259d165.jpg",
+    description: "Create stunning user interfaces and seamless user experiences.",
+    type: "Part-time",
+    createdBy: "admin789",
+    postedAt: "2025-07-30",
+    status: "closed",
+    requirements: [
+      "Proficient in design tools like Figma and Adobe XD.",
+      "Strong understanding of user-centered design principles.",
+      "Ability to create wireframes, prototypes, and user flows.",
+      "Conduct user research and usability testing."
+    ]
+  }
+];
+const {user}=useAuth()
+const [appliedJobIds, setAppliedJobIds] = useState([]);
 
-  useEffect(() => {
+useEffect(() => {
+  // const currentUser = getCurrentUser();
+  // setUser(currentUser);
+    const apps = JSON.parse(localStorage.getItem("applications")) || [];
+  const userApps = apps.filter(app => app.userId === user.id); // make sure user.id exists
+  const ids = userApps.map(app => String(app.jobId));
+  setAppliedJobIds(ids);
     setJobs(getJobsFromLocalStorage());
-  }, []);
-
+    // setJobs(exampleJobs);
+    // exampleJobs.forEach((job)=>addJobToLocalStorage(job))
+  }, [user?.id]);
   const handleAddJob = () => {
     const newJob = {
       ...formData,
       id: Date.now(),
       postedAt: new Date().toISOString().split("T")[0],
       status: "open",
+      createdBy:user.fullName,
+       requirements: formData.requirements
+      .split(',')
+      .map((req) => req.trim())
+      .filter((req) => req !== ""), 
     };
     addJobToLocalStorage(newJob);
     setJobs([...jobs, newJob]);
@@ -43,12 +121,15 @@ export default function JobsPage() {
       imageUrl: "",
       description: "",
       type: "",
+      requirements:"",
+      createdBy:""
     });
     setIsModalOpen(false);
   };
 const router = useRouter();
   return (
-    <div className="p-4 max-w-5xl mx-auto bg-gray-100">
+    <div className="w-full bg-gray-100">
+    <div className="p-4 max-w-5xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">All Jobs</h1>
         {user?.role === "admin" && (
@@ -89,6 +170,9 @@ const router = useRouter();
                 {job.status}
               </span>
             </div>
+            {appliedJobIds.includes(String(job.id)) && (
+  <p className="text-sm text-yellow-600 font-semibold mt-2">✓ Already Applied</p>
+)}
           </div>
         ))}
       </div>
@@ -114,6 +198,7 @@ const router = useRouter();
                 { key: "salary", placeholder: "Salary" },
                 { key: "type", placeholder: "Job Type (Full-time, Part-time...)" },
                 { key: "imageUrl", placeholder: "Image URL" },
+                  { key: "requirements", placeholder: "Requirements (comma-separated)" }, // NEW FIELD
               ].map(({ key, placeholder }) => (
                 <input
                   key={key}
@@ -146,6 +231,7 @@ const router = useRouter();
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }

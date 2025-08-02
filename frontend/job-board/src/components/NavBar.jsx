@@ -12,14 +12,11 @@ import { useAuth } from '@/context/AuthContext';
 export default function NavBar() {
 
   
-  const { isLoggedIn, logout } = useAuth();
  
 const router = useRouter();
+const { isLoggedIn, user, logout } = useAuth();
 
-  //  useEffect(() => {
-  //   const user = getCurrentUser();
-  //   setIsLoggedIn(!!user);
-  // }, []);
+
 
   // const handleLogout = () => {
   //   removeCurrentUser();
@@ -40,7 +37,8 @@ const router = useRouter();
         <Link href="/applications" className="text-zinc-900 text-sm hover:text-blue-800 tracking-[.2em]">Applications</Link>
         <Link href="/about" className="text-zinc-900 text-sm hover:text-blue-800 tracking-[.2em]">About</Link>
                 {/* <a href="/ssrAbout" className="text-white hover:text-purple-950 tracking-[.2em]">ssr</a> */}
-
+{user?.role=='admin'&&        <Link href="/users" className="text-zinc-900 text-sm hover:text-blue-800 tracking-[.2em]">Users</Link>
+}
 
       </div>
       <div className="flex items-center space-x-4">
@@ -50,6 +48,14 @@ const router = useRouter();
                 <Link href="/signup" className="bg-blue-800 text-sm text-white px-3 py-1 rounded hover:bg-blue-600">
                   Sign Up
                 </Link> */}
+                {isLoggedIn && user?.fullName && (
+              <div className="flex items-center space-x-2">
+                <div className="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-medium">
+                  {user.fullName.split(' ').map(word => word[0]).join('')}
+                </div>
+                <span className="text-sm text-gray-700">{user.fullName}</span>
+              </div>
+            )}
                  {isLoggedIn ? (
                   <MdOutlineLogout  onClick={logout} className='text-red-500 text-2xl'/>
 

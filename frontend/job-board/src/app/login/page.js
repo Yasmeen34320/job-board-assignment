@@ -14,7 +14,7 @@ export default function Page() {
   const [users, setUsers] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
 const router = useRouter();
-  const { isLoggedIn, logout,setIsLoggedIn } = useAuth();
+  const { isLoggedIn, logout,setIsLoggedIn,setUser } = useAuth();
 
 //   useEffect(() => {
 //     if (typeof window !== 'undefined') {
@@ -24,31 +24,47 @@ const router = useRouter();
 //       }
 //     }
 //   }, []);
+const [fieldErrors, setFieldErrors] = useState({});
 
-  const handleLogin = (e) => {
-    e.preventDefault();
+ const handleLogin = (e) => {
+  e.preventDefault();
 
-    if (!email || !password) {
-      setError('Please enter email and password');
-      return;
-    }
-    const users = getUsers();
+  const errors = {};
 
-    const found = users.find(
-      u => u.email === email && u.password === password && u.role === role
-    );
+  // Simple email regex
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email || !emailRegex.test(email)) {
+    errors.email = 'Please enter a valid email address';
+  }
 
-    if (found) {
-        setCurrentUser(found);
-setIsLoggedIn(true);
-    //   localStorage.setItem('currentUser', JSON.stringify(found));
-    //   alert(`Logged in as ${found.role}`);
-router.push('/');
+  if (!password || password.length < 6) {
+    errors.password = 'Password must be at least 6 characters';
+  }
+
+  setFieldErrors(errors);
+console.log(errors)
+  // Stop if there are validation errors
+  if (Object.keys(errors).length > 0) {
+    return;
+  }
+
+  const users = getUsers();
+  const found = users.find(
+    u => u.email === email && u.password === password && u.role === role
+  );
+
+  if (found) {
+    setCurrentUser(found);
+    setUser(found)
+    setIsLoggedIn(true);
+    
+    router.push('/');
     setError('');
-    } else {
-      setError('Invalid credentials or role');
-    }
-  };
+  } else {
+    setError('Invalid credentials or role');
+  }
+};
+
 
   return (
     <div className="min-h-screen tracking-[.15em] flex items-center justify-center bg-blue-50 px-4">
@@ -95,8 +111,11 @@ router.push('/');
               className="w-full px-3 py-2 border border-gray-200 text-sm  rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              required
+              
             />
+            {fieldErrors.email && (
+  <p className="text-red-500 text-xs mt-1 text-left">{fieldErrors.email}</p>
+)}
           </div>
 
           <div className="relative">
@@ -110,8 +129,9 @@ router.push('/');
               className="w-full px-3 py-2 border border-gray-200 text-sm rounded-md pr-10 focus:outline-none focus:ring-2 focus:ring-blue-400"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              required
+              
             />
+            
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
@@ -120,6 +140,9 @@ router.push('/');
             >
               {showPassword ? <IoEyeOff size={20} /> : <IoEye size={20} />}
             </button>
+            {fieldErrors.password && (
+  <p className="text-red-500 text-xs mt-1 text-left">{fieldErrors.password}</p>
+)}
           </div>
 
           {/* <div className="flex justify-between items-center text-sm">

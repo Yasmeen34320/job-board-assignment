@@ -15,7 +15,7 @@ export default function Page() {
   const [users, setUsers] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
 const router = useRouter();
-  const { setIsLoggedIn, logout } = useAuth();
+  const { setIsLoggedIn, logout ,setUser} = useAuth();
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -28,6 +28,7 @@ const router = useRouter();
 
   const handleSignup = (e) => {
   e.preventDefault();
+const generateUniqueId = () => Date.now().toString(); // Simple unique ID
 
   if (!fullName || !email || !password) {
     setError('Please fill in all fields');
@@ -41,15 +42,21 @@ const router = useRouter();
   }
 
   const newUser = {
-    fullName,
-    email,
-    password,
-    role,
-  };
+  id: generateUniqueId(), // ← Add this line
+  fullName,
+  email,
+  password,
+  role,
+};
+
+    
 
   const updatedUsers = [...users, newUser];
   localStorage.setItem('users', JSON.stringify(updatedUsers));
+//  setCurrentUser(newUser);
+// setUser(newUser)
  setCurrentUser(newUser);
+    setUser(newUser)
   // localStorage.setItem('currentUser', JSON.stringify(newUser));
   setUsers(updatedUsers);
 setIsLoggedIn(true);
