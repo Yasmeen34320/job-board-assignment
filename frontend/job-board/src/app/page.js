@@ -1,103 +1,212 @@
+"use client"
+
 import Image from "next/image";
+import Link from "next/link";
+import { RiUserAddLine } from "react-icons/ri";
+import { CiSearch } from "react-icons/ci";
+import { RiSendPlaneLine } from "react-icons/ri";
+import { mockUsers } from '@/data/mockUsers';
+import { useEffect } from "react";
+
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const howItWorks=[
+    {
+      id:"1",
+      icon:<RiUserAddLine className="text-blue-700" />,
+      title:'Create Profile',
+      desc:"Sign up and create your professional profile with your skills, experience, and preferences."
+    },
+     {
+      id:"2",
+      icon:<CiSearch className="text-blue-700"/>,
+      title:'Browse Jobs',
+      desc:"Search and filter through thousands of job opportunities that match your criteria."
+    },
+     {
+      id:"3",
+      icon:<RiSendPlaneLine className="text-blue-700"/>,
+      title:'Apply & Connect',
+      desc:"Submit applications with your resume and connect directly with hiring managers."
+    },
+  ]
+   const mockJobs = [
+  {
+    id: "1",
+    title: "Frontend Developer",
+    company: "TechHive Inc.",
+    location: "Cairo, Egypt",
+    imageUrl: "https://i.pinimg.com/1200x/3c/4d/dc/3c4ddc369add7df5414171508f099c9a.jpg",
+    description: "We are looking for a skilled frontend developer with React.js experience.",
+    salary: "15,000 EGP/month",
+    type: "Full-time",
+    postedAt: "2025-07-30",
+  },
+  {
+    id: "2",
+    title: "Backend Developer",
+    company: "CodeWave",
+    location: "Remote",
+    imageUrl: "https://i.pinimg.com/1200x/db/bd/b5/dbbdb52017ffdce38af556366ae68793.jpg",
+    description: "Join our backend team working with Node.js and MongoDB.",
+    salary: "18,000 EGP/month",
+    type: "Remote",
+    postedAt: "2025-07-29",
+  },
+  {
+    id: "3",
+    title: "Mobile Developer",
+    company: "Ottopay",
+    location: "Alexandria, Egypt",
+    imageUrl: "https://i.pinimg.com/1200x/a5/9d/ac/a59dacd9d970f0e467a0bcad83e63041.jpg",
+    description: "Develop cross-platform apps using Flutter for our growing startup.",
+    salary: "12,000 EGP/month",
+    type: "Part-time",
+    postedAt: "2025-07-25",
+  },
+  // {
+  //   id: "4",
+  //   title: "UI/UX Designer",
+  //   company: "DesignPro",
+  //   location: "Giza, Egypt",
+  //   imageUrl: "/company-logos/designpro.png",
+  //   description: "Create intuitive UI designs and user experiences for web and mobile apps.",
+  //   salary: "10,000 EGP/month",
+  //   type: "Contract",
+  //   postedAt: "2025-07-20",
+  // },
+  // {
+  //   id: "5",
+  //   title: "DevOps Engineer",
+  //   company: "CloudScale",
+  //   location: "Remote",
+  //   imageUrl: "/company-logos/cloudscale.png",
+  //   description: "Automate infrastructure and CI/CD pipelines using Docker and Kubernetes.",
+  //   salary: "20,000 EGP/month",
+  //   type: "Full-time",
+  //   postedAt: "2025-07-18",
+  // }
+];
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+// On first load:
+useEffect(() => {
+  const stored = localStorage.getItem('users');
+  if (!stored) {
+    localStorage.setItem('users', JSON.stringify(mockUsers));
+  }
+}, []);
+
+  return (
+    <>
+     <section
+      className="h-[90vh] bg-cover bg-center flex items-center justify-center text-center px-4"
+      style={{
+        backgroundImage: "url('/2.jpg')",
+      }}
+    >
+      <div className=" p-8 rounded-lg shadow-lg tracking-[.1em]">
+        <h1 className="text-4xl  text-white font-bold mb-4 ">Find Your Dream Job</h1>
+        <p className=" text-white mb-6 font-semibold">
+          Connect with top employers and advance your career with our comprehensive job platform
+        </p>
+        <div className="flex justify-center gap-4">
+          <Link href="/signup">
+            <button className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Get Started</button>
+          </Link>
+          <Link href="/jobs">
+            <button className=" text-white  bg-gray-400  px-6 py-2 rounded hover:bg-blue-500 hover:text-white">
+              Browse Jobs
+            </button>
+          </Link>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </div>
+    </section>
+    {/**2 */}
+      <div className="bg-white flex items-center justify-center tracking-[.1em]  p-4 gap-50 py-25">
+        <div className="flex flex-col gap-4">
+          <h3 className="text-blue-800 text-3xl font-semibold ">5000+</h3>
+          <p>Active Jobs</p>
+        </div>
+        <div className="flex flex-col gap-4">
+          <h3 className="text-blue-800 text-3xl font-semibold ">5000+</h3>
+          <p>Job Seeker</p>
+        </div>
+        <div className="flex flex-col gap-4">
+          <h3 className="text-blue-800 text-3xl font-semibold ">5000+</h3>
+          <p>Companies</p>
+        </div>
+      </div>
+      
+
+      {/**3 */}
+      <div className="tracking-[.2em] bg-gray-100 py-10">
+        <h3 className="font-semibold text-2xl">Featured Opportunities</h3>
+     
+        <div className="flex gap-4 justify-center  mt-10 w-full mb-10">
+          {mockJobs.map(element => (
+        <div key={element.id} className="w-[30%] bg-white p-4 rounded-2xl tracking-[.1em]">
+          <div className="flex justify-between">
+ <img
+                  src={`${element.imageUrl}`}
+                  alt={element.title}
+                  className="w-[20%] h-15 object-cover rounded-lg mb-4"
+                />  
+                {/* <div className="bg-blue-200 h-8 p-2 rounded-2xl flex items-center">
+                <p className="text-blue-800 text-sm">{element.type}</p>      
+                </div> */}
+                <div
+  className={`h-7 p-2 rounded-2xl flex items-center
+    ${element.type === 'Full-time' ? 'bg-green-200 text-green-800' : ''}
+    ${element.type === 'Remote' ? 'bg-blue-200 text-blue-800' : ''}
+    ${element.type === 'Part-time' ? 'bg-yellow-200 text-yellow-800' : ''}
+    ${element.type === 'Contract' ? 'bg-purple-200 text-purple-800' : ''}
+  `}
+>
+  <p className="text-xs">{element.type}</p>
+</div>
+                  </div>
+                  <div className="flex flex-col items-start tracking-[.15em]">
+                  <h2 className=" font-semibold ">{element.title}</h2>
+                  <p className="text-sm mt-4 font-semibold text-gray-500">{element.company}</p>
+                  <p className="text-xs mt-2 font-semibold text-gray-400">{element.location}</p>
+                  <p className="text-sm mt-2 font-semibold text-green-600">${element.salary}</p>
+                  <Link href={`/jobs/${element.id}`} className="bg-blue-700 text-white p-2 rounded-lg mt-4 px-4 text-sm">View Details</Link>
+                  </div>
+        </div>
+
+        
+      ))}
+        </div>
+              
+      <Link href="/jobs" className=" bg-blue-700 text-white p-2 rounded-lg mt-10 px-4 text-sm">View All Jobs</Link>
+
+      </div>
+      
+      {/**4 */}
+      <div className="bg-white tracking-[.1em]">
+                <h3 className="font-semibold text-2xl py-10">How It Works</h3>
+                <div className="flex gap-10 justify-center px-20">
+                  
+              {
+                howItWorks.map(step=>(
+                  <div key={step.id} className="flex flex-col gap-4 mb-20">
+                    <div className="bg-blue-100 p-2 w-10 h-10 mx-auto flex items-center justify-center  rounded-full">
+                      {step.icon}
+                    </div>
+                    <p className="font-semibold">{`${step.id}. ${step.title}`}</p>
+                    <p className="text-xs text-gray-600">{step.desc}</p>
+                  </div>
+                ))
+              }
+
+                </div>
+      </div>
+
+
+    </>
+    // <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
+     
+       
+    // </div>
   );
 }
