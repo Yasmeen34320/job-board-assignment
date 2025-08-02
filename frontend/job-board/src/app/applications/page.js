@@ -51,7 +51,10 @@ const userDetails = users.find((u) => u.id === app.userId);
            console.log(users)
            console.log(userDetails)
            console.log(app.userId)
+             if (!userDetails) return null;
+
             return (
+
               <div key={job.id}             className="bg-white rounded-lg mt-4  p-4 shadow-xl  ">
               <div   
 
@@ -89,7 +92,7 @@ const userDetails = users.find((u) => u.id === app.userId);
 <span className="text-xs text-gray-500">Submitted: {new Date(app.createdAt).toLocaleDateString()}</span>
 
                 {/* Posted: {job?.postedAt} */}
-             {user.role=='admin'?(  <> by <span className='text-blue-800 font-semibold'>{userDetails.fullName}</span></>):(<></>)}
+             {user.role=='admin'?(  <> by <span className='text-blue-800 font-semibold'>{userDetails?.fullName}</span></>):(<></>)}
                 </p>
             </div>
                  <div className="text-right">
@@ -159,6 +162,8 @@ const userDetails = users.find((u) => u.id === app.userId);
                       )}
                 </div>
            </div>
+            );
+           
 //               <div
 //                 key={app.id}
 //                 className="bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-300"
@@ -239,7 +244,7 @@ const userDetails = users.find((u) => u.id === app.userId);
 //                   Status: {app.status || 'Pending'}
 //                 </div>
 //               </div>
-            );
+            
           })}
         </div>
       )}
