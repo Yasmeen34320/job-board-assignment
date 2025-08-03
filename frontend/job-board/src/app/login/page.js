@@ -49,6 +49,7 @@ console.log(errors)
   }
 
   const users = getUsers();
+  console.log(users)
   const found = users.find(
     u => u.email === email && u.password === password && u.role === role
   );

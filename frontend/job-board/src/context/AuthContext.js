@@ -1,7 +1,7 @@
 "use client"; 
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { getCurrentUser, removeCurrentUser } from '@/utils/getCurrentUser';
+import { getCurrentUser, getUsers, removeCurrentUser } from '@/utils/getCurrentUser';
 
 const AuthContext = createContext();
 
@@ -10,6 +10,10 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+   const stored = localStorage.getItem('users');
+     if (!stored) {
+       localStorage.setItem('users', JSON.stringify(mockUsers));
+     }
     const storedUser = getCurrentUser();
     if (storedUser) {
       setUser(storedUser);

@@ -145,9 +145,9 @@ export default function ApplyPage() {
         {step === 2 && (
           <div className="space-y-4">
             <textarea
-              placeholder="Cover Letter (max 500 chars)"
+              placeholder="Cover Letter (max 2000 chars)"
               className="w-full p-2 border rounded h-24"
-              maxLength={500}
+              maxLength={2000}
               value={formData.coverLetter}
               onChange={(e) => setFormData({ ...formData, coverLetter: e.target.value })}
             />

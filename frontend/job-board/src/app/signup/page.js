@@ -47,6 +47,7 @@ const generateUniqueId = () => Date.now().toString(); // Simple unique ID
   email,
   password,
   role,
+  createdAt:new Date().toLocaleDateString()
 };
 
     

@@ -4,12 +4,3 @@ export const mockUsers = [
 ];
 
 
-// const users = JSON.parse(localStorage.getItem('users') || '[]');
-
-// // Add user
-// users.push(newUser);
-// localStorage.setItem('users', JSON.stringify(users));
-
-// // Delete user
-// const filtered = users.filter(u => u.email !== targetEmail);
-// localStorage.setItem('users', JSON.stringify(filtered));

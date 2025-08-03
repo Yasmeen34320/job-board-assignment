@@ -17,7 +17,7 @@ export default function Footer() {
             </span>
             JobSeeker
           </h2>
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-gray-400 text-left">
             Your gateway to career success. Connect with top employers and find your dream job.
           </p>
           <div className="flex space-x-3 mt-4">
